@@ -1,17 +1,31 @@
 const mongoose = require('mongoose');
 
 const connectionSchema = new mongoose.Schema({
-    id: {type: String, required: true},
-    board_id: {type: mongoose.Schema.Types.ObjectId, ref: 'Board', required: true},
-    from_node_id: {type: String, required: true},
-    to_node_id: {type: String, required: true},
+    boardId: { 
+        type: mongoose.Schema.Types.ObjectId, 
+        ref: 'Board', 
+        required: true 
+    },
+    fromNodeId: { 
+        type: mongoose.Schema.Types.ObjectId, 
+        ref: 'Node', 
+        required: true 
+    },
+    toNodeId: { 
+        type: mongoose.Schema.Types.ObjectId, 
+        ref: 'Node', 
+        required: true 
+    },
     style: {
-        color: {type: String},
-        width: {type: Number},
-        type: {type: String, enum: ['solid', 'dashed', 'dotted', 'arrow'], default: 'solid'},
+        color: { type: String },
+        width: { type: Number },
+        type: { 
+            type: String, 
+            enum: ['solid', 'dashed', 'dotted', 'arrow'], 
+            default: 'solid' 
+        }
     }
-}, {_id: false});
+});
 
 const Connection = mongoose.model('Connection', connectionSchema);
 module.exports = Connection;
-
