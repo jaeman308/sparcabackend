@@ -4,7 +4,11 @@ const mongoose = require('mongoose');
 const logger = require('morgan');
 const cors = require('cors');
 const boardRouter = require("./controllers/boards");
-// const taskRouter = require("./controllers/tasks");
+const nodeRouter = require("./controllers/node");
+const connectionRouter = require("./controllers/connection");
+const taskRouter = require("./controllers/tasks");
+const budgetRouter = require("./controllers/budgetList");
+const authRequired = require("./middleware/authRequired");
 
 require("dotenv").config();
 
@@ -18,8 +22,12 @@ app.use(cors());
 app.use(logger('dev'));
 app.use(express.json());
 
-app.use("/boards", boardRouter);
-// app.use("/tasks", taskRouter);
+app.use("/boards",authRequired, boardRouter);
+app.use("/nodes",authRequired, nodeRouter);
+app.use("/connections",authRequired, connectionRouter);
+app.use("/tasks",authRequired, taskRouter);
+app.use("/budget",authRequired, budgetRouter);
+app.use("/auth", require("./controllers/auth"));
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {

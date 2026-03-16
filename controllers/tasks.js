@@ -1,10 +1,11 @@
 const express = require('express');
 const router = express.Router();
-const Task = require('../models/Tasks');
+const Task = require('../models/tasks.js');
 
 router.post ("/", async (req, res) => {
     try{
         const newTask = await Task.create(req.body)
+        res.status(201).json(newTask);
     }catch (error){
         res.status(500).json({message: "Error creating task", error});
     };
@@ -23,7 +24,7 @@ router.get("/:id", async (req,res) => {
     try {
         const task = await Task.findById(req.params.id)
         if(!task){
-            return res.status(404).jsong({message: "Task not found"});
+            return res.status(404).json({message: "Task not found"});
         }
         res.status(200).json(task);
     }catch (error){

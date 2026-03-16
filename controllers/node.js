@@ -6,7 +6,8 @@ const Board = require("../models/board");
 
 router.post("/", async (req,res) => {
     try{
-        const newNode = await Node.create (req.body);
+        const newNode = await Node.create ({...req.body, board: req.body.board});
+        await Board.findByIdAndUpdate(req.body.board, {$push: {nodes: newNode._id}});
         res.status (201).json (newNode);
 
     }catch (error) {
@@ -14,14 +15,18 @@ router.post("/", async (req,res) => {
     }
  });
 
- router.get("/", async (req,res) => {
-    try{
-        const nodes = await Node.find();
-        res.status (200).json (nodes);
-    }catch (error) {
-        res.status(500).json ({message: "Error fetching ndoes", error});
+router.get("/", async (req, res) => {
+    try {
+        const filter = {};
+        if (req.query.boardId) {
+            filter.board = req.query.boardId;
+        }
+        const nodes = await Node.find(filter);
+        res.status(200).json(nodes);
+    } catch (error) {
+        res.status(500).json({ message: "Error fetching nodes", error });
     }
- })
+});
 
  router.get("/:id", async (req,res) => {
     try{

@@ -4,7 +4,7 @@ const Board = require('../models/board')
 
 router.post("/", async (req, res) => {
     try {
-        const newBoard = await Board.create(req.body);
+        const newBoard = await Board.create({ ...req.body, user: req.userId });
         res.status(201).json(newBoard);
     }catch (error) {
         res.status(500).json({message: "Error creating board", error});
@@ -13,7 +13,9 @@ router.post("/", async (req, res) => {
 
 router.get("/", async (req, res) => {
     try {
-        const boards = await Board.find();
+        console.log("Token user ID:", req.userId); // Debugging line to check userId
+        const boards = await Board.find({ user: req.userId }).populate('nodes');
+        console.log("Boards found:", boards); // Debugging line to check retrieved boards
         res.status(200).json(boards);
     } catch (error) {
         res.status(500).json({message: "Error fetching boards", error});
@@ -21,7 +23,7 @@ router.get("/", async (req, res) => {
 });
 router.get("/:id", async (req, res) => {
     try{
-        const board =  await Board.findById(req.params.id);
+        const board =  await Board.findById(req.params.id).populate('nodes');
         if(!board){
             return  res.status(404).json({message: "Board not found"});
         }
