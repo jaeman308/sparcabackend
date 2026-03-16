@@ -18,8 +18,12 @@ router.post("/", async (req,res) => {
 router.get("/", async (req, res) => {
     try {
         const filter = {};
-        if (req.query.boardId) {
-            filter.board = req.query.boardId;
+        if (req.query.board) {
+            // Match both possible field names for backward compatibility
+            filter.$or = [
+                { board: req.query.board },
+                { board_id: req.query.board }
+            ];
         }
         const nodes = await Node.find(filter);
         res.status(200).json(nodes);
